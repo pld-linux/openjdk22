@@ -7,6 +7,10 @@
 %define		use_jdk	openjdk22
 %endif
 
+%ifarch x32
+%define		with_zero	1
+%endif
+
 %ifarch %{ix86} %{x8664} aarch64
 %define		with_shenandoahgc	1
 %endif
@@ -29,6 +33,7 @@ Source0:	https://github.com/openjdk/jdk22u/archive/jdk-%{version}-ga/%{name}-%{v
 # Source0-md5:	13b4e71252055e6d78ae12b8db5021d4
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
+Patch1:		x32.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -338,6 +343,7 @@ Przykłady dla OpenJDK.
 %setup -qn jdk22u-jdk-%{version}-ga
 
 %patch -P0 -p1
+%patch -P1 -p1
 
 # Rename uabs to g_uabs to avoid conflict with glibc uabs (GCC 15+)
 find src/hotspot -name "*.hpp" -o -name "*.cpp" | xargs %{__sed} -i 's/\buabs\b/g_uabs/g'
